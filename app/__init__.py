@@ -1,6 +1,7 @@
 from flask import Flask
 from .config import ProductionConfig, DevelopmentConfig
 from .extensions import db, migrate
+from .routes import register_blueprints
 import os
 
 def create_app():
@@ -16,8 +17,7 @@ def create_app():
     db.init_app(app)
     migrate.init_app(app, db)
 
-    from .routes import main_bp
-    app.register_blueprint(main_bp)
+    register_blueprints(app)
 
     print(f"[*] Flask iniciado no ambiente: {env}")
 
