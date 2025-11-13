@@ -10,7 +10,7 @@ class Product(db.Model):
     name = db.Column(db.String(120), nullable=False)
     barcode = db.Column(db.String(13), nullable=False)
     measure = db.Column(db.String(50))
-    weigth = db.Column(db.Float)
+    weight = db.Column(db.Float)
     length = db.Column(db.Float)
     image = db.Column(db.String(255))
     status = db.Column(db.Boolean, default=True)
