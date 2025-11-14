@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify
-
+from .products_routes import products_bp
 main_bp = Blueprint("main", __name__)
 
 
@@ -10,4 +10,4 @@ def index():
 
 def register_blueprints(app):
     app.register_blueprint(main_bp)
-    # app.register_blueprint(produtos_bp, url_prefix="/produtos")
+    app.register_blueprint(products_bp, url_prefix="/products")
