@@ -8,7 +8,7 @@ class Product(db.Model):
     categories_id = db.Column(db.Integer, db.ForeingKey("categories.id"), nullable=False)
     producer_id = db.Column(db.Integer, db.ForeignKey("producers.id"), nullable=False)
     name = db.Column(db.String(120), nullable=False)
-    barcode = db.Column(db.String(13), nullable=False)
+    barcode = db.Column(db.String(13), unique=True, nullable=False)
     measure = db.Column(db.String(50))
     weight = db.Column(db.Float)
     length = db.Column(db.Float)
