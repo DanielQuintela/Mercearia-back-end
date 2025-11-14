@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify
-from products_routes import products_bp
+from .products_routes import products_bp
 main_bp = Blueprint("main", __name__)
 
 

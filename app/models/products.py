@@ -5,7 +5,7 @@ class Product(db.Model):
     __tablename__ = "products"
 
     id = db.Column(db.Integer, primary_key=True)
-    categories_id = db.Column(db.Integer, db.ForeingKey("categories.id"), nullable=False)
+    categories_id = db.Column(db.Integer, db.ForeignKey("categories.id"), nullable=False)
     producer_id = db.Column(db.Integer, db.ForeignKey("producers.id"), nullable=False)
     name = db.Column(db.String(120), nullable=False)
     barcode = db.Column(db.String(13), unique=True, nullable=False)
