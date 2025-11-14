@@ -9,7 +9,8 @@ class Config:
 
     if not SECRET_KEY:
         raise ValueError("SECRET_KEY não configurada.")
-
+    
+# TODO: ADICIONAR A PASTA DATABASE
 class DevelopmentConfig(Config):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = os.getenv(

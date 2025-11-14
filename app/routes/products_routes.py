@@ -56,7 +56,8 @@ def get_by_id(product_id):
 def get_by_barcode():
     data = request.get_json()
 
-    product_services.get_product_by_barcode(
+    response = product_services.get_product_by_barcode(
         data = data
     )
+    return jsonify(response), 200
 
