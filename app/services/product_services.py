@@ -19,7 +19,6 @@ def get_by_Id(id):
     return Product.query.get(id)
 
 def update_product(id, **data):
-    
     product = Product.query.get(id)
     if not product:
         return {"error": "Product not found"}, 404
@@ -33,10 +32,10 @@ def update_product(id, **data):
             setattr(product, key, value)
 
     db.session.commit()
-
+    
+    return {"message": "Product updated successfully"}
   
 def delete_product(id):
-
     product = Product.query.get(id)
     if not product:
         return None
@@ -45,5 +44,6 @@ def delete_product(id):
     return True
 
 def get_product_by_barcode(barcode):
+    barcode = barcode.strip()
     product = Product.query.filter_by(barcode = barcode).first()
     return product
