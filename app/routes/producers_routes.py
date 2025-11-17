@@ -28,7 +28,7 @@ def get_by_name():
     )
     return jsonify(response), 200
     
-@producers_bp.route("/<int:producer_id", methods=["PUT"])
+@producers_bp.route("/<int:producer_id>", methods=["PUT"])
 def update(producer_id):
     data = request.get_json()
 
