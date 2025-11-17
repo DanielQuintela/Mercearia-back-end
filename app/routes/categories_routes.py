@@ -20,13 +20,18 @@ def create_category():
     return jsonify(response.to_dict()), 201
 
 @categories_bp.route("/getName", methods=["GET"])
-def get_by_name():
-    data = request.get_json()
+def get_by_name_route():
+    paramName = request.args.get("name")
 
     response = categories_services.get_by_name(
-        data = data
+        name= paramName
     )
-    return jsonify(response), 200
+    
+    if isinstance(response, tuple):
+        body, status = response
+        return jsonify(body), status
+
+    return jsonify(response.to_dict()), 200
     
 @categories_bp.route("/<int:category_id>", methods=["PUT"])
 def update(category_id):
@@ -43,6 +48,7 @@ def update(category_id):
 def delete():
     data = request.get_json()
 
-    categories_services.delete_category(data = data)
+    category_id = data.get("category_id")
+    categories_services.delete_category(category_id)
 
     return jsonify({"response": "OK"}), 200
