@@ -10,7 +10,6 @@ class Config:
     if not SECRET_KEY:
         raise ValueError("SECRET_KEY não configurada.")
     
-# TODO: ADICIONAR A PASTA DATABASE
 class DevelopmentConfig(Config):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = os.getenv(
@@ -19,10 +18,10 @@ class DevelopmentConfig(Config):
 
 class ProductionConfig(Config):
     DEBUG = False
-    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")
-    if not SQLALCHEMY_DATABASE_URI:
-        raise ValueError("DATABASE_URL não configurada para produção.")
-
+    SQLALCHEMY_DATABASE_URI = os.getenv(
+        "DATABASE_URL"
+        )
+        
 class TestingConfig(Config):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
