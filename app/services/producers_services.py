@@ -14,29 +14,37 @@ def create_producer(name, status):
 
 def get_by_name(name):
     producer = Producers.query.filter_by(name = name).first()
+    if not producer:
+        return {"error": "Producer not found"}, 404
     return producer
 
-def update_producer(id, **data):
+def update_producer(id, data):
 
-    producer = Producers.query.get(id)
-    if not producer:
-        return {"error": "producer not found"}, 404
-    
-    if "name" in data:
-        producer.name = data["name"]
-    
-    if "status" in data:
-        producer.status = data["status"]
+    try:
+        producer = Producers.query.get(id)
+        if not producer:
+            return {"error": "producer not found"}, 404
 
-    db.session.commit() 
+        if "name" in data:
+            producer.name = data["name"]
 
-    return {"message": "producer updated successfully"}, 200
+        if "status" in data:
+            producer.status = data["status"]
+
+        db.session.commit()
+        return {"message": "producer updated successfully"}, 200
+
+    except Exception as e:
+        db.session.rollback() 
+        
+        return {"error": str(e)}, 500
 
 def delete_producer(id):
     producer = Producers.query.get(id)
-    if not producer:
+
+    if producer == None:
         return {"error": "producer not found"}, 404
     
     db.session.delete(producer)
     db.session.commit()
-    return 200
+    return {"message": "producer deleted successfully"}, 200
