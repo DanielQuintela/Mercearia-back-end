@@ -23,8 +23,8 @@ class Product(db.Model):
     )
     price = db.Column(db.Numeric(10, 2))
     
-    categories = db.relationship("Category", backref = "products")
-    producer = db.relationship("Producer", backref = "products")
+    categories = db.relationship("Categories", backref = "products")
+    producer = db.relationship("Producers", backref = "products")
 
     def to_dict(self):
         return {

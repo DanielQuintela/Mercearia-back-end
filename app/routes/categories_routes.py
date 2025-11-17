@@ -28,7 +28,7 @@ def get_by_name():
     )
     return jsonify(response), 200
     
-@categories_bp.route("/<int:category_id", methods=["PUT"])
+@categories_bp.route("/<int:category_id>", methods=["PUT"])
 def update(category_id):
     data = request.get_json()
 
