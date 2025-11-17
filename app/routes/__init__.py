@@ -17,6 +17,6 @@ def register_blueprints(app):
     app.register_blueprint(categories_bp, url_prefix="/api/v1/categories")
     app.register_blueprint(producers_bp, url_prefix="/api/v1/producers")
 
-@main_bp.route("/api/v1/health", methods=["GET"])
+@main_bp.route("/health", methods=["GET"])
 def health_check():
     return health_services.health_check()
