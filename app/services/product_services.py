@@ -41,10 +41,10 @@ def update_product(id, data):
 def delete_product(id):
     product = Product.query.get(id)
     if not product:
-        return None
+        return {"error": "Product not found"}, 404
     db.session.delete(product)
     db.session.commit()
-    return True
+    return {"response": "OK"}, 200
 
 def get_product_by_barcode(barcode):
     product = Product.query.filter_by(barcode = barcode).first()
