@@ -21,12 +21,17 @@ def create_producer():
 
 @producers_bp.route("/getName", methods=["GET"])
 def get_by_name():
-    data = request.get_json()
+    paramName = request.args.get("name")
 
     response = producers_services.get_by_name(
-        data = data
+        name = paramName
     )
-    return jsonify(response), 200
+
+    if isinstance(response, tuple):
+        body, status = response
+        return jsonify(body), status
+    
+    return jsonify(response.to_dict()), 200
     
 @producers_bp.route("/<int:producer_id>", methods=["PUT"])
 def update(producer_id):
@@ -43,6 +48,7 @@ def update(producer_id):
 def delete():
     data = request.get_json()
 
-    producers_services.delete_producer(data = data)
+    producer_id = data.get("producer_id")
+    response, status = producers_services.delete_producer(producer_id)
 
-    return jsonify({"response": "OK"}), 200
+    return jsonify(response), status
