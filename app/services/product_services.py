@@ -16,9 +16,12 @@ def create_product(categories_id, producer_id , name , barcode,
     return new
 
 def get_by_Id(id):
-    return Product.query.get(id)
+    product = Product.query.get(id)
+    if not product:
+        return {"error": "Product not found"}, 404
+    return product
 
-def update_product(id, **data):
+def update_product(id, data):
     product = Product.query.get(id)
     if not product:
         return {"error": "Product not found"}, 404
@@ -44,6 +47,5 @@ def delete_product(id):
     return True
 
 def get_product_by_barcode(barcode):
-    barcode = barcode.strip()
     product = Product.query.filter_by(barcode = barcode).first()
     return product
