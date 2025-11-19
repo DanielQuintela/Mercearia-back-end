@@ -14,8 +14,10 @@ def create_producer(name, status):
 
 def get_by_name(name):
     producer = Producers.query.filter_by(name = name).first()
+
     if not producer:
-        return {"error": "Producer not found"}, 404
+        return {"error": "producer not found"}, 404
+    
     return producer
 
 def update_producer(id, data):
