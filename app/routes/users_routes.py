@@ -31,6 +31,7 @@ def update_user():
 
     return jsonify(response)
 
+# TODO: REFATORAR ROTA
 @users_bp.route("/getByName/<string:user_name>", methods=["GET"])
 def get_by_name(user_name):
     response = users_services.get_by_name(user_name)

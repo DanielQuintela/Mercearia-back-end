@@ -17,6 +17,7 @@ def create_user(name, email, password, role, status):
     return user
 
 def update_user(data):
+    # TODO: REFATORAR QUANDO CRIAR JWT
     id = data.get("id")
     try:
         user = Users.query.get(id)
@@ -68,7 +69,7 @@ def disable_user(data):
 
 def delete_user(data):
     id = data.get("user_id")
-    user = Users.query.delete(id)
+    user = Users.query.get(id)
 
     if not user:
         return {"error": "user not found"}, 404
