@@ -31,7 +31,7 @@ def update(product_id):
     data = request.get_json()
 
     response = product_services.update_product(
-        product_id = product_id,
+        id = product_id,
         data = data
     )
 
@@ -40,24 +40,30 @@ def update(product_id):
 @products_bp.route("/", methods=["DELETE"])
 def delete():
     data = request.get_json()
+    product_id = data.get("product_id")
 
-    product_services.delete_product(data = data)
+    response, status= product_services.delete_product(id = product_id)
 
-    return jsonify({"response": "OK"}), 200
+    return jsonify(response), status
 
 @products_bp.route("/<int:product_id>", methods=["GET"])
 def get_by_id(product_id):
     response = product_services.get_by_Id(
         id= product_id
     )
-    return jsonify(response), 200
+    if isinstance(response, tuple):
+        body, status = response
+        return jsonify(body), status
+    
+    return jsonify(response.to_dict()), 200
 
 @products_bp.route("/get", methods=["GET"])
 def get_by_barcode():
     data = request.get_json()
+    barcodeValue = data.get("barcode")
 
     response = product_services.get_product_by_barcode(
-        data = data
+        barcode = barcodeValue
     )
-    return jsonify(response), 200
+    return jsonify(response.to_dict()), 200
 

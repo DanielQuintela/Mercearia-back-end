@@ -48,4 +48,4 @@ def delete_category(id):
     
     db.session.delete(category)
     db.session.commit()
-    return 200
+    return {"response": "OK"}, 200

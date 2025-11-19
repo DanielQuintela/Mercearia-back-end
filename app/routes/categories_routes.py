@@ -26,7 +26,7 @@ def get_by_name_route():
     response = categories_services.get_by_name(
         name= paramName
     )
-    
+
     if isinstance(response, tuple):
         body, status = response
         return jsonify(body), status
@@ -49,6 +49,6 @@ def delete():
     data = request.get_json()
 
     category_id = data.get("category_id")
-    categories_services.delete_category(category_id)
+    response, status = categories_services.delete_category(category_id)
 
-    return jsonify({"response": "OK"}), 200
+    return jsonify(response), status
