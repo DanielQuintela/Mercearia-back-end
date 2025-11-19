@@ -1,7 +1,7 @@
 from app.extensions import db
 from app.models.users import Users
-from common.constants import USER_PROTECTED_FIELDS
-from utils.encryption_password import encrypt_password
+from app.common.constants import USER_PROTECTED_FIELDS
+from app.utils.encryption_password import encrypt_password
 
 def get_users():
     return Users.query.all()
@@ -66,6 +66,15 @@ def disable_user(data):
 
     return {"message": "user disabled successfully"}, 200
 
+def delete_user(data):
+    id = data.gey("user_id")
+    user = Users.query.delete(id)
 
+    if not user:
+        return {"error": "user not found"}, 404
+    
+    db.session.delete(user)
+    db.session.commit()
+    return {"response": "OK"}, 200
 
 
