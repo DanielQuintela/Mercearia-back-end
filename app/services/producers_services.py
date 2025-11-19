@@ -44,7 +44,7 @@ def update_producer(id, data):
 def delete_producer(id):
     producer = Producers.query.get(id)
 
-    if producer == None:
+    if not producer:
         return {"error": "producer not found"}, 404
     
     db.session.delete(producer)
