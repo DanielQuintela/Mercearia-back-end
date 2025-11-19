@@ -1,7 +1,7 @@
 from app.extensions import db
 from app.models.users import Users
 from app.common.constants import USER_PROTECTED_FIELDS
-from app.utils.encryption_password import encrypt_password
+from app.utils.encryption_password import encrypt_password, verify_password
 
 def get_users():
     return Users.query.all()
@@ -54,7 +54,7 @@ def get_user_by_id(data):
     return Users.query.get(id)
 
 def disable_user(data):
-    id = data.gey("user_id")
+    id = data.get("user_id")
     user = Users.query.get(id)
 
     if not user:
@@ -67,7 +67,7 @@ def disable_user(data):
     return {"message": "user disabled successfully"}, 200
 
 def delete_user(data):
-    id = data.gey("user_id")
+    id = data.get("user_id")
     user = Users.query.delete(id)
 
     if not user:
@@ -76,5 +76,19 @@ def delete_user(data):
     db.session.delete(user)
     db.session.commit()
     return {"response": "OK"}, 200
+
+def check(data):
+    user_id = data.get("user_id")
+    password = data.get("password")
+
+    user = Users.query.get(user_id)
+
+    if not user:
+        return False
+
+    print("---------------")
+    print(user.password)
+    # Verificar senha
+    return verify_password(user.password, password)
 
 

@@ -59,3 +59,10 @@ def delete_user():
     response = users_services.delete_user(data)
 
     return jsonify(response)
+
+# TODO: TESTES DE HASH
+@users_bp.route("/check", methods=["GET"])
+def check():
+    data = request.get_json()
+    response = users_services.check(data)
+    return jsonify(response)
