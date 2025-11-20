@@ -42,16 +42,17 @@ def update_user(data):
         
         return {"error": str(e)}, 500
     
-def get_by_name(name):
-    user = Users.query.filter_by(name=name).first()
+def get_by_name(data):
+    name = data.get("name")
+    user = Users.query.filter_by(name=name).all()
 
     if not user:
-        return {"Ok": []},
+        return {"Ok": []},200
     
     return user
 
 def get_user_by_id(data):
-    id = data.get("id")
+    id = data.get("user_id")
     return Users.query.get(id)
 
 def disable_user(data):

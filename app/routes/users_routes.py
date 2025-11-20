@@ -31,12 +31,16 @@ def update_user():
 
     return jsonify(response)
 
-# TODO: REFATORAR ROTA
-@users_bp.route("/getByName/<string:user_name>", methods=["GET"])
-def get_by_name(user_name):
-    response = users_services.get_by_name(user_name)
+@users_bp.route("/getByName", methods=["GET"])
+def get_by_name():
+    data = request.get_json()
+    response = users_services.get_by_name(data)
 
-    return jsonify(response.to_dict())
+    if isinstance(response, tuple):
+        body, status = response
+        return jsonify(body), status
+
+    return jsonify([u.to_dict() for u in response]), 200
 
 @users_bp.route("/get", methods=["GET"])
 def get_by_id():
