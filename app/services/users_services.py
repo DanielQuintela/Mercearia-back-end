@@ -1,7 +1,7 @@
 from app.extensions import db
 from app.models.users import Users
 from app.common.constants import USER_PROTECTED_FIELDS
-from app.utils.encryption_password import encrypt_password
+from app.utils.encryption_password import encrypt_password, verify_password
 
 def get_users():
     return Users.query.all()
@@ -17,6 +17,7 @@ def create_user(name, email, password, role, status):
     return user
 
 def update_user(data):
+    # TODO: REFATORAR QUANDO CRIAR JWT
     id = data.get("id")
     try:
         user = Users.query.get(id)
@@ -41,20 +42,21 @@ def update_user(data):
         
         return {"error": str(e)}, 500
     
-def get_by_name(name):
-    user = Users.query.filter_by(name=name).first()
+def get_by_name(data):
+    name = data.get("name")
+    user = Users.query.filter_by(name=name).all()
 
     if not user:
-        return {"Ok": []},
+        return {"Ok": []},200
     
     return user
 
 def get_user_by_id(data):
-    id = data.get("id")
+    id = data.get("user_id")
     return Users.query.get(id)
 
 def disable_user(data):
-    id = data.gey("user_id")
+    id = data.get("user_id")
     user = Users.query.get(id)
 
     if not user:
@@ -67,8 +69,8 @@ def disable_user(data):
     return {"message": "user disabled successfully"}, 200
 
 def delete_user(data):
-    id = data.gey("user_id")
-    user = Users.query.delete(id)
+    id = data.get("user_id")
+    user = Users.query.get(id)
 
     if not user:
         return {"error": "user not found"}, 404
@@ -76,5 +78,19 @@ def delete_user(data):
     db.session.delete(user)
     db.session.commit()
     return {"response": "OK"}, 200
+
+def check(data):
+    user_id = data.get("user_id")
+    password = data.get("password")
+
+    user = Users.query.get(user_id)
+
+    if not user:
+        return False
+
+    print("---------------")
+    print(user.password)
+    # Verificar senha
+    return verify_password(user.password, password)
 
 

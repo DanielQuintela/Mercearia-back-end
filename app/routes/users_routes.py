@@ -31,11 +31,16 @@ def update_user():
 
     return jsonify(response)
 
-@users_bp.route("/getByName/<string:user_name>", methods=["GET"])
-def get_by_name(user_name):
-    response = users_services.get_by_name(user_name)
+@users_bp.route("/getByName", methods=["GET"])
+def get_by_name():
+    data = request.get_json()
+    response = users_services.get_by_name(data)
 
-    return jsonify(response.to_dict())
+    if isinstance(response, tuple):
+        body, status = response
+        return jsonify(body), status
+
+    return jsonify([u.to_dict() for u in response]), 200
 
 @users_bp.route("/get", methods=["GET"])
 def get_by_id():
@@ -58,4 +63,11 @@ def delete_user():
 
     response = users_services.delete_user(data)
 
+    return jsonify(response)
+
+# TODO: TESTES DE HASH
+@users_bp.route("/check", methods=["GET"])
+def check():
+    data = request.get_json()
+    response = users_services.check(data)
     return jsonify(response)
