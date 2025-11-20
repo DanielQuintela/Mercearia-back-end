@@ -16,10 +16,12 @@ def create_product(categories_id, producer_id , name , barcode,
     return new
 
 def get_by_Id(id):
-    return Product.query.get(id)
+    product = Product.query.get(id)
+    if not product:
+        return {"error": "Product not found"}, 404
+    return product
 
-def update_product(id, **data):
-    
+def update_product(id, data):
     product = Product.query.get(id)
     if not product:
         return {"error": "Product not found"}, 404
@@ -33,16 +35,16 @@ def update_product(id, **data):
             setattr(product, key, value)
 
     db.session.commit()
-
+    
+    return {"message": "Product updated successfully"}
   
 def delete_product(id):
-
     product = Product.query.get(id)
     if not product:
-        return None
+        return {"error": "Product not found"}, 404
     db.session.delete(product)
     db.session.commit()
-    return True
+    return {"response": "OK"}, 200
 
 def get_product_by_barcode(barcode):
     product = Product.query.filter_by(barcode = barcode).first()
