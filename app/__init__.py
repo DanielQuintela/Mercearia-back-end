@@ -17,8 +17,8 @@ def create_app():
 
     db.init_app(app)
     migrate.init_app(app, db)
-    # TODO: PARA QUANDO EU FOR IMPLEMENTAR OS SCHEMAS
-    # ma.init_app(app)
+    
+    ma.init_app(app)
 
     middleware_activate(app)
 

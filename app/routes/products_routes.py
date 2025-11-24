@@ -34,17 +34,9 @@ def delete(product_id):
 
 @products_bp.route("/<int:product_id>", methods=["GET"])
 def get_by_id(product_id):
-    response = product_services.get_by_Id(id= product_id)
-    if isinstance(response, tuple):
-        body, status = response
-        return jsonify(body), status
-    
-    return jsonify(response.to_dict()), 200
-# TODO: USAR QUANDO CRIAR MIDDLEWARE
-# @products_bp.route("/<int:product_id>", methods=["GET"])
-# def get_by_id(product_id):
-#     product = product_services.get_by_id(product_id)
-#     return product_schema.dump(product), 200
+    product = product_services.get_by_id(product_id)
+
+    return product_schema.dump(product), 200
 
 
 @products_bp.route("/barcode", methods=["GET"])
