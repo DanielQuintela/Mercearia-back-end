@@ -1,16 +1,13 @@
 from app.extensions import db
 from app.models.products import Product
 from app.common.constants import PRODUCT_PROTECTED_FIELDS
+from werkzeug.exceptions import NotFound
 
 def get_products():
     return Product.query.all()
 
-def create_product(categories_id, producer_id , name , barcode, 
-                    measure, weight, length , image, status, price ):
-    
-    new = Product(categories_id = categories_id, producer_id = producer_id, name = name,
-                    barcode = barcode, measure = measure, weight = weight, length = length,
-                    image = image, status = status, price = price)
+def create_product(data):
+    new = Product(**data)
     db.session.add(new)
     db.session.commit()
     return new
@@ -21,8 +18,16 @@ def get_by_Id(id):
         return {"error": "Product not found"}, 404
     return product
 
-def update_product(id, data):
-    product = Product.query.get(id)
+# TODO: USAR QUANDO CRIAR MIDDLEWARE
+# def get_by_id(product_id):
+#     product = Product.query.get(product_id)
+#     if not product:
+#         raise NotFound("Product not found")
+#     return product
+
+
+def update_product(product_id, data):
+    product = Product.query.get(product_id)
     if not product:
         return {"error": "Product not found"}, 404
     
@@ -38,13 +43,16 @@ def update_product(id, data):
     
     return {"message": "Product updated successfully"}
   
-def delete_product(id):
-    product = Product.query.get(id)
+
+def delete_product(product_id):
+    product = Product.query.get(product_id)
+    # TODO: AQUI PRECISA DO MIDDLEWARE PARA O RETORNO DO ERRO
     if not product:
-        return {"error": "Product not found"}, 404
+        raise NotFound("Product not found")
+
     db.session.delete(product)
     db.session.commit()
-    return {"response": "OK"}, 200
+
 
 def get_product_by_barcode(barcode):
     product = Product.query.filter_by(barcode = barcode).first()
