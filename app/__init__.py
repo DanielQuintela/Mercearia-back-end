@@ -1,8 +1,8 @@
 from flask import Flask
-from .config import ProductionConfig, DevelopmentConfig
+from .config import ProductionConfig, DevelopmentConfig, middleware_activate
 from .extensions import db, migrate, ma
 from .routes import register_blueprints
-from app.middleware.validation_erros_schemas import register_error_handlers
+
 import os
 
 def create_app():
@@ -20,7 +20,7 @@ def create_app():
     # TODO: PARA QUANDO EU FOR IMPLEMENTAR OS SCHEMAS
     # ma.init_app(app)
 
-    register_error_handlers(app)
+    middleware_activate(app)
 
     register_blueprints(app)
 

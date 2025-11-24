@@ -1,18 +1,31 @@
 from flask import jsonify
-from werkzeug.exceptions import HTTPException, NotFound, BadRequest
+from werkzeug.exceptions import HTTPException
 
-def register_error_handlers(app):
-    
+
+def register_error_handlers_global(app):
+
     @app.errorhandler(HTTPException)
-    def handle_http_exceptions(e):
-        return jsonify({"error": e.description}), e.code
-
+    def handle_http_exception(e):
+        return jsonify({
+            "status": e.code,        
+            "error": e.name,         
+            "message": e.description
+        }), e.code
 
     @app.errorhandler(Exception)
     def handle_unexpected_error(e):
+
         if hasattr(e, "messages"):
-            return jsonify({"error": e.messages}), 400
+            return jsonify({
+                "status": 400,
+                "error": "Validation Error",
+                "message": e.messages
+            }), 400
 
-        print(f"[ERROR] {type(e).__name__}: {e}")
+        print(f"[ERROR] {type(e).__name__}: {str(e)}")
 
-        return jsonify({"error": "Internal server error"}), 500
+        return jsonify({
+            "status": 500,
+            "error": "Internal Server Error",
+            "message": "An unexpected error occurred"
+        }), 500

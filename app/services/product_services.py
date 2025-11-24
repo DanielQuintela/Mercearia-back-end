@@ -1,6 +1,7 @@
 from app.extensions import db
 from app.models.products import Product
 from app.common.constants import PRODUCT_PROTECTED_FIELDS
+from werkzeug.exceptions import NotFound
 
 def get_products():
     return Product.query.all()
@@ -47,7 +48,7 @@ def delete_product(product_id):
     product = Product.query.get(product_id)
     # TODO: AQUI PRECISA DO MIDDLEWARE PARA O RETORNO DO ERRO
     if not product:
-        return {"error": "Product not found"}, 404
+        raise NotFound("Product not found")
 
     db.session.delete(product)
     db.session.commit()
