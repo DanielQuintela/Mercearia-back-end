@@ -3,7 +3,7 @@ from marshmallow import Schema, fields, validate
 class ProductSchema(Schema):
 
     id = fields.Int(dump_only=True)
-    category_id = fields.Int(required=True, validate=validate.Range(min=1))
+    categories_id = fields.Int(required=True, validate=validate.Range(min=1))
     producer_id = fields.Int(required=True, validate=validate.Range(min=1))
     name = fields.Str(required=True, validate=validate.Length(min=1, max=120))
     barcode = fields.Str(required=True, validate=validate.Length(min=8, max=13))
