@@ -1,31 +1,29 @@
 from flask import Blueprint, jsonify, request
 from app.services import users_services
+from app.schemas.users_schema import UsersSchema, UserResponseSchema
 
 users_bp = Blueprint("users", __name__)
+users_schema = UsersSchema()
+users_list_schema = UserResponseSchema(many=True)
+users_response_schema = UserResponseSchema()
 
 @users_bp.route("/", methods=["GET"])
 def get_all():
     response = users_services.get_users()
 
-    return jsonify([p.to_dict() for p in response])
+    return users_list_schema.dump(response)
 
 @users_bp.route("/", methods=["POST"])
 def create_user():
-    data = request.get_json()
+    data = users_schema.load(request.get_json())
 
-    response = users_services.create_user(
-        name = data.get("name"),
-        email = data.get("email"),
-        password = data.get("password"),
-        role = data.get("role"),
-        status = data.get("status")
-    )
+    response = users_services.create_user(data)
 
-    return jsonify(response.to_dict()), 201
+    return users_response_schema.dump(response), 201
     
 @users_bp.route("/", methods=["PUT"])
 def update_user():
-    data = request.get_json()
+    data = users_schema.load(request.get_json())
 
     response = users_services.update_user(data)
 
@@ -33,25 +31,24 @@ def update_user():
 
 @users_bp.route("/getByName", methods=["GET"])
 def get_by_name():
-    data = request.get_json()
-    response = users_services.get_by_name(data)
+    name = request.args.get("user_name")
 
-    if isinstance(response, tuple):
-        body, status = response
-        return jsonify(body), status
+    response = users_services.get_by_name(name)
 
-    return jsonify([u.to_dict() for u in response]), 200
+    return users_list_schema.dump(response), 200
 
+# TODO: PAREI AQUI
 @users_bp.route("/get", methods=["GET"])
 def get_by_id():
-    data = request.get_json()
-    response = users_services.get_user_by_id(data)
+    name = request.args.get("user_id")
+
+    response = users_services.get_user_by_id(name)
 
     return jsonify(response.to_dict())
 
 @users_bp.route("/disableUser", methods=["PUT"])
 def disable_user():
-    data = request.get_json()
+    data = users_schema.load(request.get_json())
 
     response = users_services.disable_user(data)
 
@@ -59,7 +56,8 @@ def disable_user():
 
 @users_bp.route("/", methods=["DELETE"])
 def delete_user():
-    data = request.get_json()
+    data = users_schema.load(request.get_json())
+
 
     response = users_services.delete_user(data)
 
@@ -68,6 +66,7 @@ def delete_user():
 # TODO: TESTES DE HASH
 @users_bp.route("/check", methods=["GET"])
 def check():
-    data = request.get_json()
+    data = users_schema.load(request.get_json())
+
     response = users_services.check(data)
     return jsonify(response)

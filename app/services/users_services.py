@@ -2,6 +2,7 @@ from app.extensions import db
 from app.models.users import Users
 from app.common.constants import USER_PROTECTED_FIELDS
 from app.utils.encryption_password import encrypt_password, verify_password
+from werkzeug.exceptions import NotFound
 
 def get_users():
     return Users.query.all()
@@ -19,41 +20,36 @@ def create_user(name, email, password, role, status):
 def update_user(data):
     # TODO: REFATORAR QUANDO CRIAR JWT
     id = data.get("id")
-    try:
-        user = Users.query.get(id)
 
-        if not user:
-            return {"error": "user not found"}, 404
-        
-        for key, value in data.items():
-            if (
-                hasattr(user, key)
-                and key not in USER_PROTECTED_FIELDS 
-                and value is not None
-            ):
-                setattr(user, key, value)
-
-        db.session.commit()
-    
-        return {"message": "user updated successfully"}
-
-    except Exception as e:
-        db.session.rollback() 
-        
-        return {"error": str(e)}, 500
-    
-def get_by_name(data):
-    name = data.get("name")
-    user = Users.query.filter_by(name=name).all()
+    user = Users.query.get(id)
 
     if not user:
-        return {"Ok": []},200
+        raise NotFound("User not found")
+    
+    for key, value in data.items():
+        if (
+            hasattr(user, key)
+            and key not in USER_PROTECTED_FIELDS 
+            and value is not None
+        ):
+            setattr(user, key, value)
+
+    db.session.commit()
+
+    return {"message": "user updated successfully"}
+
+    
+def get_by_name(name):
+
+    user = Users.query.filter(Users.name.ilike(f"%{name}%")).all()
     
     return user
 
-def get_user_by_id(data):
-    id = data.get("user_id")
-    return Users.query.get(id)
+def get_user_by_id(id):
+    user = Users.query.get(id)
+    if not user:
+        raise NotFound("User not found")
+    return 
 
 def disable_user(data):
     id = data.get("user_id")
