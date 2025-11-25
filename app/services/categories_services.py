@@ -20,32 +20,26 @@ def search_by_name(name):
     return category
 
 def update_category(id, data):
-
-    try:
-        category = Categories.query.get(id)
-        if not category:
-            raise NotFound("Category not found")
-        
-        if "name" in data:
-            category.name = data["name"]
-        
-        if "status" in data:
-            category.status = data["status"]
-
-        db.session.commit() 
-
-        return {"message": "Category updated successfully"}, 200
-    
-    except Exception as e:
-            db.session.rollback() 
-            
-            return {"error": str(e)}, 500
-
-def delete_category(id):
     category = Categories.query.get(id)
     if not category:
-        return {"error": "Category not found"}, 404
+        raise NotFound("Category not found")
+    
+    for key, value in data.items():
+        if(
+            hasattr(category, key) and value is not None
+        ):
+            setattr(category, key, value)
+
+    db.session.commit() 
+
+    return {"message": "Category updated successfully"}
+    
+
+def delete_category(category_id):
+    category = Categories.query.get(category_id)
+    if not category:
+        raise NotFound("Category not found")
     
     db.session.delete(category)
     db.session.commit()
-    return {"response": "OK"}, 200
+    return {"response": "OK"}

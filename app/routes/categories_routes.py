@@ -27,23 +27,17 @@ def get_by_name_route():
     
     return categories_list_schema.dump(response), 200
 
-# TODO: PAREI AQUI NESSE CONTROLLER
 @categories_bp.route("/<int:category_id>", methods=["PUT"])
 def update(category_id):
-    data = request.get_json()
+    data = categories_schema.load(request.get_json())
 
-    response = categories_services.update_category(
-        id = category_id,
-        data = data
-    )
+    response = categories_services.update_category(id = category_id, data = data)
 
     return jsonify(response), 200
 
-@categories_bp.route("/", methods=["DELETE"])
-def delete():
-    data = request.get_json()
+@categories_bp.route("/<int:category_id>", methods=["DELETE"])
+def delete(category_id):
 
-    category_id = data.get("category_id")
-    response, status = categories_services.delete_category(category_id)
+    response = categories_services.delete_category(category_id)
 
-    return jsonify(response), status
+    return jsonify(response), 200
