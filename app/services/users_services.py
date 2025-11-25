@@ -66,17 +66,15 @@ def disable_user(user_id):
     db.session.commit()
 
     return
-# TODO: PAREI AQUI
-def delete_user(data):
-    id = data.get("user_id")
-    user = Users.query.get(id)
 
+def delete_user(user_id):
+    user = Users.query.get(user_id)
     if not user:
-        return {"error": "user not found"}, 404
+        raise NotFound("User not found")
     
     db.session.delete(user)
     db.session.commit()
-    return {"response": "OK"}, 200
+    return
 
 def check(data, user_id):
     password = data.get("password")

@@ -58,15 +58,11 @@ def disable_user(user_id):
 
     return jsonify({"message": "user disabled successfully", "status": 200}), 200
 
-# TODO: PAREI AQUI
-@users_bp.route("/", methods=["DELETE"])
-def delete_user():
-    data = users_schema.load(request.get_json())
+@users_bp.route("/<int:user_id>", methods=["DELETE"])
+def delete_user(user_id):
+    users_services.delete_user(user_id)
 
-
-    response = users_services.delete_user(data)
-
-    return jsonify(response)
+    return jsonify({"response": "OK", "status": 200}, 200)
 
 # TODO: TESTES DE HASH
 @users_bp.route("/check/<int:user_id>", methods=["GET"])
