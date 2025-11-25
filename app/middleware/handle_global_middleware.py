@@ -1,6 +1,6 @@
 from flask import jsonify
 from werkzeug.exceptions import HTTPException
-
+from .database_middleware import handle_database_middleware
 
 def register_error_handlers_global(app):
 
@@ -11,6 +11,8 @@ def register_error_handlers_global(app):
             "error": e.name,         
             "message": e.description
         }), e.code
+    
+    handle_database_middleware(app)
 
     @app.errorhandler(Exception)
     def handle_unexpected_error(e):
