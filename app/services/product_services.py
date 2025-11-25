@@ -12,24 +12,17 @@ def create_product(data):
     db.session.commit()
     return new
 
-def get_by_Id(id):
-    product = Product.query.get(id)
+def get_by_id(product_id):
+    product = Product.query.get(product_id)
     if not product:
-        return {"error": "Product not found"}, 404
+        raise NotFound("Product not found")
     return product
-
-# TODO: USAR QUANDO CRIAR MIDDLEWARE
-# def get_by_id(product_id):
-#     product = Product.query.get(product_id)
-#     if not product:
-#         raise NotFound("Product not found")
-#     return product
 
 
 def update_product(product_id, data):
     product = Product.query.get(product_id)
     if not product:
-        return {"error": "Product not found"}, 404
+        raise NotFound("Product not found")
     
     for key, value in data.items():
         if (
@@ -46,7 +39,6 @@ def update_product(product_id, data):
 
 def delete_product(product_id):
     product = Product.query.get(product_id)
-    # TODO: AQUI PRECISA DO MIDDLEWARE PARA O RETORNO DO ERRO
     if not product:
         raise NotFound("Product not found")
 

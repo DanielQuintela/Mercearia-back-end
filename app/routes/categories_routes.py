@@ -1,54 +1,43 @@
 from flask import Blueprint, jsonify, request
 from app.services import categories_services
+from app.schemas.categories_schema import CategoriesSchema
 
 categories_bp = Blueprint("categories", __name__)
+categories_schema = CategoriesSchema()
+categories_list_schema = CategoriesSchema(many=True)
 
 @categories_bp.route("/", methods=["GET"])
 def get_all():
     response = categories_services.get_categories()
 
-    return jsonify([p.to_dict() for p in response])
+    return categories_list_schema.dump(response)
 
 @categories_bp.route("/", methods=["POST"])
 def create_category():
-    data = request.get_json()
-    response = categories_services.create_category(
-        name = data.get("name"),
-        status = data.get("status")
-    )
+    data = categories_schema.load(request.get_json())
+    response = categories_services.create_category(data)
 
-    return jsonify(response.to_dict()), 201
+    return categories_schema.dump(response), 201
 
 @categories_bp.route("/getName", methods=["GET"])
 def get_by_name_route():
     paramName = request.args.get("name")
 
-    response = categories_services.get_by_name(
-        name= paramName
-    )
-
-    if isinstance(response, tuple):
-        body, status = response
-        return jsonify(body), status
-
-    return jsonify(response.to_dict()), 200
+    response = categories_services.search_by_name(name= paramName)
     
+    return categories_list_schema.dump(response), 200
+
 @categories_bp.route("/<int:category_id>", methods=["PUT"])
 def update(category_id):
-    data = request.get_json()
+    data = categories_schema.load(request.get_json())
 
-    response = categories_services.update_category(
-        id = category_id,
-        data = data
-    )
+    response = categories_services.update_category(id = category_id, data = data)
 
     return jsonify(response), 200
 
-@categories_bp.route("/", methods=["DELETE"])
-def delete():
-    data = request.get_json()
+@categories_bp.route("/<int:category_id>", methods=["DELETE"])
+def delete(category_id):
 
-    category_id = data.get("category_id")
-    response, status = categories_services.delete_category(category_id)
+    response = categories_services.delete_category(category_id)
 
-    return jsonify(response), status
+    return jsonify(response), 200

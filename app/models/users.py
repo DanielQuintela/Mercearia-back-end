@@ -8,7 +8,7 @@ class Users(db.Model):
     name = db.Column(db.String(120), nullable=False)
     email = db.Column(db.String(120), nullable=False, unique=True)
     password = db.Column(db.String(60), nullable=False)
-    role = db.Column(db.String(30), nullable=False)
+    role = db.Column(db.String(30), nullable=False, default="user")
     status = db.Column(db.Boolean, default=True)
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), nullable = False)
     updated_at = db.Column( 
