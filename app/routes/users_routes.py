@@ -17,7 +17,7 @@ users_response_schema = UserResponseSchema()
 def get_all():
     response = users_services.get_users()
 
-    return users_list_schema.dump(response)
+    return users_schema.dump(response, many=True)
 
 
 @users_bp.route("/", methods=["POST"])
