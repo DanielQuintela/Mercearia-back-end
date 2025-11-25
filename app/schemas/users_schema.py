@@ -6,7 +6,7 @@ class UsersSchema(Schema):
     name = fields.Str(required=True, validate=validate.Length(min=1, max=120))
     email = fields.Email(required=True, validate=validate.Length(min=1, max=120))
     password = fields.Str(required=True, validate=validate.Length(min=1, max=60))
-    role = fields.Str(required=True, validate=validate.OneOf(["admin", "user"]))
+    role = fields.Str(dump_only=True)
     status = fields.Bool(load_default=True)
     created_at = fields.DateTime(dump_only=True)
     updated_at = fields.DateTime(dump_only=True)

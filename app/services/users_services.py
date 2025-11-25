@@ -7,21 +7,25 @@ from werkzeug.exceptions import NotFound
 def get_users():
     return Users.query.all()
 
-def create_user(name, email, password, role, status):
-    hash_password = encrypt_password(password)
+def create_user(data):
+    hash_password = encrypt_password(data["password"])
 
-    user = Users(name=name, email=email, password=hash_password, role=role, status=status)
+    user = Users(
+        name=data["name"],
+        email=data["email"],
+        password=hash_password,
+        status=data.get("status", True)
+    )
 
     db.session.add(user)
     db.session.commit()
 
     return user
 
-def update_user(data):
+def update_user(data, user_id):
     # TODO: REFATORAR QUANDO CRIAR JWT
-    id = data.get("id")
 
-    user = Users.query.get(id)
+    user = Users.query.get(user_id)
 
     if not user:
         raise NotFound("User not found")
@@ -49,21 +53,20 @@ def get_user_by_id(id):
     user = Users.query.get(id)
     if not user:
         raise NotFound("User not found")
-    return 
+    return user
 
-def disable_user(data):
-    id = data.get("user_id")
-    user = Users.query.get(id)
+def disable_user(user_id):
+    user = Users.query.get(user_id)
 
     if not user:
-        return {"error": "user not found"}, 404
+        raise NotFound("User not found")
     
     user.status = False
 
     db.session.commit()
 
-    return {"message": "user disabled successfully"}, 200
-
+    return
+# TODO: PAREI AQUI
 def delete_user(data):
     id = data.get("user_id")
     user = Users.query.get(id)
@@ -75,8 +78,7 @@ def delete_user(data):
     db.session.commit()
     return {"response": "OK"}, 200
 
-def check(data):
-    user_id = data.get("user_id")
+def check(data, user_id):
     password = data.get("password")
 
     user = Users.query.get(user_id)
@@ -89,4 +91,18 @@ def check(data):
     # Verificar senha
     return verify_password(user.password, password)
 
+def create_adm(data):
+    hash_password = encrypt_password(data["password"])
 
+    adm = Users(
+        name=data["name"],
+        email=data["email"],
+        password=hash_password,
+        role=data.get("role", "admin"),
+        status=data.get("status", True)
+    )
+
+    db.session.add(adm)
+    db.session.commit()
+
+    return adm

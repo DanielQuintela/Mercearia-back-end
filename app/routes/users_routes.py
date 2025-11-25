@@ -7,11 +7,18 @@ users_schema = UsersSchema()
 users_list_schema = UserResponseSchema(many=True)
 users_response_schema = UserResponseSchema()
 
+# @users_bp.route("/", methods=["GET"])
+# def get_all():
+#     response = users_services.get_users()
+
+#     return users_list_schema.dump(response)
+# TODO: REMOVER ROTA DE TESTE E DEIXAR A DE CIMA
 @users_bp.route("/", methods=["GET"])
 def get_all():
     response = users_services.get_users()
 
     return users_list_schema.dump(response)
+
 
 @users_bp.route("/", methods=["POST"])
 def create_user():
@@ -21,11 +28,11 @@ def create_user():
 
     return users_response_schema.dump(response), 201
     
-@users_bp.route("/", methods=["PUT"])
-def update_user():
+@users_bp.route("/<int:user_id>", methods=["PUT"])
+def update_user(user_id):
     data = users_schema.load(request.get_json())
 
-    response = users_services.update_user(data)
+    response = users_services.update_user(data, user_id)
 
     return jsonify(response)
 
@@ -37,23 +44,21 @@ def get_by_name():
 
     return users_list_schema.dump(response), 200
 
-# TODO: PAREI AQUI
 @users_bp.route("/get", methods=["GET"])
 def get_by_id():
-    name = request.args.get("user_id")
+    id = request.args.get("user_id")
 
-    response = users_services.get_user_by_id(name)
+    response = users_services.get_user_by_id(id)
 
-    return jsonify(response.to_dict())
+    return users_response_schema.dump(response), 200
 
-@users_bp.route("/disableUser", methods=["PUT"])
-def disable_user():
-    data = users_schema.load(request.get_json())
+@users_bp.route("/disableUser/<int:user_id>", methods=["PUT"])
+def disable_user(user_id):
+    users_services.disable_user(user_id)
 
-    response = users_services.disable_user(data)
+    return jsonify({"message": "user disabled successfully", "status": 200}), 200
 
-    return jsonify(response)
-
+# TODO: PAREI AQUI
 @users_bp.route("/", methods=["DELETE"])
 def delete_user():
     data = users_schema.load(request.get_json())
@@ -64,9 +69,17 @@ def delete_user():
     return jsonify(response)
 
 # TODO: TESTES DE HASH
-@users_bp.route("/check", methods=["GET"])
-def check():
+@users_bp.route("/check/<int:user_id>", methods=["GET"])
+def check(user_id):
+    data = users_schema.load(request.get_json(), partial=True)
+
+    response = users_services.check(data, user_id)
+    return jsonify(response)
+
+@users_bp.route("/createAdm", methods=["POST"])
+def create_new_adm():
     data = users_schema.load(request.get_json())
 
-    response = users_services.check(data)
-    return jsonify(response)
+    response = users_services.create_adm(data)
+
+    return users_response_schema.dump(response)
