@@ -7,7 +7,6 @@ class TableName(Enum):
     CATEGORIES = "categories"
     
 
-
 class LogAction(Enum):
     CREATE = "CREATE"
     UPDATE = "UPDATE"
