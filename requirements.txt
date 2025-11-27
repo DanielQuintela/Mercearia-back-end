@@ -6,3 +6,4 @@ python-dotenv
 marshmallow
 marshmallow-sqlalchemy
 flask-marshmallow
+flask_jwt_extended

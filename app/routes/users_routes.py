@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, request
 from app.services import users_services
+from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 from app.schemas.users_schema import UsersSchema, UserResponseSchema
 
 users_bp = Blueprint("users", __name__)
@@ -28,10 +29,13 @@ def create_user():
 
     return users_response_schema.dump(response), 201
     
-@users_bp.route("/<int:user_id>", methods=["PUT"])
-def update_user(user_id):
-    data = users_schema.load(request.get_json())
+@users_bp.route("/", methods=["PUT"])
+@jwt_required()
+def update_user():
+    user_id = get_jwt_identity()
+    print(user_id)
 
+    data = users_schema.load(request.get_json())
     response = users_services.update_user(data, user_id)
 
     return jsonify(response)
@@ -59,7 +63,13 @@ def disable_user(user_id):
     return jsonify({"message": "user disabled successfully", "status": 200}), 200
 
 @users_bp.route("/<int:user_id>", methods=["DELETE"])
+@jwt_required()
 def delete_user(user_id):
+    claims = get_jwt()
+    role = claims.get("role")
+
+    if role != "admin":
+        return {"msg": "Unauthorized - Admin only"}, 403
     users_services.delete_user(user_id)
 
     return jsonify({"response": "OK", "status": 200}, 200)
@@ -73,6 +83,7 @@ def check(user_id):
     return jsonify(response)
 
 @users_bp.route("/createAdm", methods=["POST"])
+@jwt_required()
 def create_new_adm():
     data = users_schema.load(request.get_json())
 

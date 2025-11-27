@@ -33,8 +33,6 @@ def create_user(data):
     return user
 
 def update_user(data, user_id):
-    # TODO: REFATORAR QUANDO CRIAR JWT
-
     user = Users.query.get(user_id)
 
     if not user:

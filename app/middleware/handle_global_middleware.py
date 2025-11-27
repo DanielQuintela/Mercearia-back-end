@@ -1,5 +1,5 @@
 from flask import jsonify
-from werkzeug.exceptions import HTTPException
+from werkzeug.exceptions import HTTPException, Unauthorized
 from .database_middleware import handle_database_middleware
 
 def register_error_handlers_global(app):
@@ -31,3 +31,7 @@ def register_error_handlers_global(app):
             "error": "Internal Server Error",
             "message": "An unexpected error occurred"
         }), 500
+    
+    @app.errorhandler(Unauthorized)
+    def handle_unauthorized(e):
+        return jsonify({"error": e.description, "status": e.code}), 401
