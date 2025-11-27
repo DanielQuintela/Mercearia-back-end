@@ -5,6 +5,7 @@ class TableName(Enum):
     USERS = "users"
     PRODUCERS = "producers"
     CATEGORIES = "categories"
+    PROMOTIONS = "promotions"
     
 
 class LogAction(Enum):
