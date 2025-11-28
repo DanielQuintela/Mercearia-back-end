@@ -30,7 +30,7 @@ def get_by_name_route():
     
     return categories_list_schema.dump(response), 200
 
-@categories_bp.route("/<int:category_id>", methods=["PUT"])
+@categories_bp.route("/<string:category_id>", methods=["PUT"])
 @jwt_required()
 def update(category_id):
     data = categories_schema.load(request.get_json())
@@ -39,7 +39,7 @@ def update(category_id):
 
     return jsonify(response), 200
 
-@categories_bp.route("/<int:category_id>", methods=["DELETE"])
+@categories_bp.route("/<string:category_id>", methods=["DELETE"])
 @jwt_required()
 def delete(category_id):
 
