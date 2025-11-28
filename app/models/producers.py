@@ -1,10 +1,11 @@
 from app.extensions import db
+import ulid
 from datetime import datetime , timezone
 
 class Producers(db.Model):
     __tablename__ = "producers"
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.String(26), primary_key=True, default=lambda: str(ulid.new()))
     name = db.Column(db.String(50), nullable=False, unique=True)
     status = db.Column(db.Boolean, default=True)
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), nullable = False)
