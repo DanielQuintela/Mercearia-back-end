@@ -1,13 +1,18 @@
 from app.extensions import db
+import ulid
 from sqlalchemy.dialects.mysql import JSON
 from sqlalchemy.sql import func
 
 class Audit_Log(db.Model):
     __tablename__ = "audit_log"
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(
+        db.String(26),
+        primary_key=True,
+        default=lambda: str(ulid.new())
+    )
     table_name = db.Column(db.String(50), nullable=False, index=True)
-    record_id = db.Column(db.Integer, nullable=False, index=True)
+    record_id = db.Column(db.String(26), nullable=False, index=True)
     action = db.Column(db.String(15), nullable=False)
     old_values = db.Column(JSON, nullable=False)
     new_values = db.Column(JSON, nullable=False)

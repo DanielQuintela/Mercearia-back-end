@@ -56,13 +56,13 @@ def get_by_id():
 
     return users_response_schema.dump(response), 200
 
-@users_bp.route("/disableUser/<int:user_id>", methods=["PUT"])
+@users_bp.route("/disableUser/<string:user_id>", methods=["PUT"])
 def disable_user(user_id):
     users_services.disable_user(user_id)
 
     return jsonify({"message": "user disabled successfully", "status": 200}), 200
 
-@users_bp.route("/<int:user_id>", methods=["DELETE"])
+@users_bp.route("/<string:user_id>", methods=["DELETE"])
 @jwt_required()
 def delete_user(user_id):
     claims = get_jwt()
@@ -75,7 +75,7 @@ def delete_user(user_id):
     return jsonify({"response": "OK", "status": 200}, 200)
 
 # TODO: TESTES DE HASH
-@users_bp.route("/check/<int:user_id>", methods=["GET"])
+@users_bp.route("/check/<string:user_id>", methods=["GET"])
 def check(user_id):
     data = users_schema.load(request.get_json(), partial=True)
 
