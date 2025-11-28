@@ -27,7 +27,7 @@ def create_product():
     product = product_services.create_product(data)
     return product_schema.dump(product), 201
 
-@products_bp.route("/<int:product_id>", methods=["PUT"])
+@products_bp.route("/<string:product_id>", methods=["PUT"])
 @jwt_required()
 def update(product_id):
     data = product_schema.load(request.get_json(), partial=True)
@@ -36,14 +36,14 @@ def update(product_id):
 
     return jsonify(updated_product), 200
 
-@products_bp.route("/<int:product_id>", methods=["DELETE"])
+@products_bp.route("/<string:product_id>", methods=["DELETE"])
 @jwt_required()
 def delete(product_id):
     product_services.delete_product(product_id)
     return jsonify({"message": "Product deleted successfully"}), 200
 
 
-@products_bp.route("/<int:product_id>", methods=["GET"])
+@products_bp.route("/<string:product_id>", methods=["GET"])
 def get_by_id(product_id):
     product = product_services.get_by_id(product_id)
 
