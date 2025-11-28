@@ -28,7 +28,7 @@ def create_promotion():
 
     return promotion_schema.dump(promotion), 201
 
-@promotions_bp.route("/<int:promotion_id>", methods=["PUT"])
+@promotions_bp.route("/<string:promotion_id>", methods=["PUT"])
 @jwt_required()
 def update_promotion(promotion_id):
     claims = get_jwt()
@@ -42,7 +42,7 @@ def update_promotion(promotion_id):
 
     return jsonify(updated), 200
 
-@promotions_bp.route("/<int:promotion_id>", methods=["DELETE"])
+@promotions_bp.route("/<string:promotion_id>", methods=["DELETE"])
 @jwt_required()
 def delete_promotion(promotion_id):
     claims = get_jwt()
@@ -56,7 +56,7 @@ def delete_promotion(promotion_id):
     return jsonify({"message": "Promotion deleted successfully"}), 200
 
 
-@promotions_bp.route("/<int:promotion_id>", methods=["GET"])
+@promotions_bp.route("/<string:promotion_id>", methods=["GET"])
 def get_promotion_by_id(promotion_id):
     promotion = promotions_services.get_promotion_by_id(promotion_id)
     return promotion_schema.dump(promotion), 200

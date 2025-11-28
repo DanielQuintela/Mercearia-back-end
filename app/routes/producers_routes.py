@@ -35,7 +35,7 @@ def get_by_name():
 
     return producers_schema.dump(response), 200
     
-@producers_bp.route("/<int:producer_id>", methods=["PUT"])
+@producers_bp.route("/<string:producer_id>", methods=["PUT"])
 @jwt_required()
 def update_producers(producer_id):
     data = producers_schema.load(request.get_json(), partial= True)
@@ -48,7 +48,7 @@ def update_producers(producer_id):
     return jsonify({"message": "producer updated successfully", "status": 200}
 ), 200
 
-@producers_bp.route("/<int:producer_id>", methods=["DELETE"])
+@producers_bp.route("/<string:producer_id>", methods=["DELETE"])
 @jwt_required()
 def delete(producer_id):
 

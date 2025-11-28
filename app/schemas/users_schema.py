@@ -2,7 +2,7 @@ from marshmallow import Schema, fields, validate
 
 class UsersSchema(Schema):
 
-    id = fields.Int(dump_only=True)
+    id = fields.Str(dump_only=True)
     name = fields.Str(required=True, validate=validate.Length(min=1, max=120))
     email = fields.Email(required=True, validate=validate.Length(min=1, max=120))
     password = fields.Str(required=True, validate=validate.Length(min=1, max=60))
