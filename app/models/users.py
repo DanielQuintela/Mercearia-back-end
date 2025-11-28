@@ -12,12 +12,11 @@ class Users(db.Model):
     password = db.Column(db.String(60), nullable=False)
     role = db.Column(db.String(30), nullable=False, default="user")
     status = db.Column(db.Boolean, default=True)
-    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), nullable = False)
+    created_at = db.Column(db.DateTime, server_default=func.now(), nullable = False)
     updated_at = db.Column( 
         db.DateTime, 
-        default=lambda: datetime.now(timezone.utc), 
-        onupdate=lambda: datetime.now(timezone.utc),
-        nullable = False
+        server_default=func.now(),
+        server_onupdate=func.now(),
     )
 
     def to_dict(self):
