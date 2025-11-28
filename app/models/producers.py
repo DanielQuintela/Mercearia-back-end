@@ -1,6 +1,6 @@
 from app.extensions import db
 import ulid
-from datetime import datetime , timezone
+from sqlalchemy.sql import func
 
 class Producers(db.Model):
     __tablename__ = "producers"
@@ -8,11 +8,11 @@ class Producers(db.Model):
     id = db.Column(db.String(26), primary_key=True, default=lambda: str(ulid.new()))
     name = db.Column(db.String(50), nullable=False, unique=True)
     status = db.Column(db.Boolean, default=True)
-    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), nullable = False)
+    created_at = db.Column(db.DateTime, server_default=func.now(), nullable = False)
     updated_at = db.Column( 
         db.DateTime, 
-        default=lambda: datetime.now(timezone.utc), 
-        onupdate=lambda: datetime.now(timezone.utc),
+        server_default=func.now(),
+        server_onupdate=func.now(),
         nullable = False
     )
 
