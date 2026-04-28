@@ -1,69 +1,63 @@
 from flask import Blueprint, jsonify, request
 from app.services import product_services
+from flask_jwt_extended import jwt_required, get_jwt
+from app.schemas.products_schema import ProductSchema
 
 products_bp = Blueprint("products", __name__)
+product_schema = ProductSchema()
+product_list_schema = ProductSchema(many=True)
 
 @products_bp.route("/", methods=["GET"])
+@jwt_required()
 def get_products():
     products = product_services.get_products()
-    return jsonify([p.to_dict() for p in products])
+    return product_list_schema.dump(products)
+    
 
 @products_bp.route("/", methods=["POST"])
-def create():
-    data = request.get_json()
-    response = product_services.create_product(
-        categories_id = data.get("categories_id"),
-        producer_id  = data.get("producer_id"),
-        name = data.get("name"),
-        barcode = data.get("barcode"),
-        measure = data.get("measure"),
-        weight = data.get("weight"),
-        length = data.get("length"),
-        image = data.get("image"),
-        status = data.get("status"),
-        price = data.get("price"),
-    )
+@jwt_required()
+def create_product():
+    claims = get_jwt()
+    role = claims.get("role")
 
-    return jsonify(response.to_dict()), 201
-
-@products_bp.route("/<int:product_id>", methods=["PUT"])
-def update(product_id):
-    data = request.get_json()
-
-    response = product_services.update_product(
-        id = product_id,
-        data = data
-    )
-
-    return jsonify(response), 200
-
-@products_bp.route("/", methods=["DELETE"])
-def delete():
-    data = request.get_json()
-    product_id = data.get("product_id")
-
-    response, status= product_services.delete_product(id = product_id)
-
-    return jsonify(response), status
-
-@products_bp.route("/<int:product_id>", methods=["GET"])
-def get_by_id(product_id):
-    response = product_services.get_by_Id(
-        id= product_id
-    )
-    if isinstance(response, tuple):
-        body, status = response
-        return jsonify(body), status
+    if role != "admin":
+        return {"msg": "Unauthorized - Admin only"}, 403
     
-    return jsonify(response.to_dict()), 200
+    data = product_schema.load(request.get_json())
+    product = product_services.create_product(data)
+    return product_schema.dump(product), 201
 
-@products_bp.route("/get", methods=["GET"])
+@products_bp.route("/<string:product_id>", methods=["PUT"])
+@jwt_required()
+def update(product_id):
+    data = product_schema.load(request.get_json(), partial=True)
+
+    updated_product = product_services.update_product(product_id, data)
+
+    return jsonify(updated_product), 200
+
+@products_bp.route("/<string:product_id>", methods=["DELETE"])
+@jwt_required()
+def delete(product_id):
+    product_services.delete_product(product_id)
+    return jsonify({"message": "Product deleted successfully"}), 200
+
+
+@products_bp.route("/<string:product_id>", methods=["GET"])
+def get_by_id(product_id):
+    product = product_services.get_by_id(product_id)
+
+    return product_schema.dump(product), 200
+
+
+@products_bp.route("/barcode", methods=["GET"])
 def get_by_barcode():
-    data = request.get_json()
-    barcodeValue = data.get("barcode")
+    barcode = request.args.get("barcode")
 
-    response = product_services.get_product_by_barcode(
-        barcode = barcodeValue
-    )
-    return jsonify(response.to_dict()), 200
+    if not barcode:
+        return jsonify({"error": "Barcode is required"}), 400
+
+    product = product_services.get_product_by_barcode(barcode)
+    
+    return product_schema.dump(product), 200
 

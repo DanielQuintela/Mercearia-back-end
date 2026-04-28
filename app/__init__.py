@@ -1,7 +1,8 @@
 from flask import Flask
-from .config import ProductionConfig, DevelopmentConfig
-from .extensions import db, migrate, ma
+from .config import ProductionConfig, DevelopmentConfig, middleware_activate
+from .extensions import db, migrate, ma, jwt
 from .routes import register_blueprints
+
 import os
 
 def create_app():
@@ -16,10 +17,13 @@ def create_app():
 
     db.init_app(app)
     migrate.init_app(app, db)
-    # TODO: PARA QUANDO EU FOR IMPLEMENTAR OS SCHEMAS
-    # ma.init_app(app)
+    ma.init_app(app)
+
+    middleware_activate(app)
 
     register_blueprints(app)
+
+    jwt.init_app(app)
 
     print(f"[*] Flask iniciado no ambiente: {env}")
 

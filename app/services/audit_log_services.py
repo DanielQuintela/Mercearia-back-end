@@ -4,12 +4,11 @@ from app.models.audit_log import Audit_Log
 def get_logs():
     return Audit_Log.query.all()
 
-def create_log(name, table_name, record_id, action, old_values, new_values):
+def log_action(table_name, record_id, action, old_values, new_values):
     audit_log = Audit_Log(
-        name=name,
-        table_name=table_name,
+        table_name=table_name.value if hasattr(table_name, "value") else table_name,
         record_id=record_id,
-        action=action,
+        action=action.value if hasattr(action, "value") else action,
         old_values=old_values,
         new_values=new_values,
     )
